@@ -1,10 +1,12 @@
+#include "MusicEngine.h"
 int ledPin = 8;
 int cardiacPin = 7;
 int lowPowerPin = 6;
 int state = -1;
 int StartTime = 0;
 int mode = 1; //mode 1: regular, mode 2: LowPower, mode 3: cardiac, mode 10: both issues
-int tonePin = A0;
+
+MusicEngine music(5);
 
 /**/
 void cycle(){
@@ -36,16 +38,17 @@ void setup() {
   pinMode(ledPin, OUTPUT);
   pinMode(cardiacPin, INPUT_PULLUP);
   pinMode(lowPowerPin, INPUT_PULLUP);
-  pinMode(tonePin, OUTPUT);
+  music.begin()
   Serial.println("initialized");
+
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   delay(20);
   //interval = output mode; 3 modes: normal, Cardiac Alert, Low Voltage, both
+  music.update();
   cycle();
-  tone(tonePin, (440 * mode));
   if (state == 1){
     digitalWrite(ledPin, HIGH);
   } else {
@@ -63,7 +66,6 @@ void loop() {
   } else {
     mode = 1;
     StartTime = millis();
-    noTone(tonePin);
     digitalWrite(ledPin, LOW);
   }
 
